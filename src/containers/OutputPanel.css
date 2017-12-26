@@ -1,6 +1,16 @@
+.outputPanel:before,
+.outputPanel:after {
+    content: "";
+    display: table;
+}
+
+.outputPanel:after {
+    clear:both;
+}
+
 .outputPanel {
-    width: 75%;
+    width: 73%;
     float: left;
-    height: 500px;
-    background-color: #ccc;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
 }

@@ -1,0 +1,20 @@
+.infoPanel:before,
+.infoPanel:after {
+    content: "";
+    display: table;
+}
+
+.infoPanel:after {
+    clear:both;
+}
+
+.infoColumn {
+    width: 33%;
+    float: left;
+}
+
+.infoPanel {
+    border: solid black 2px;
+    padding: 3px;
+    box-sizing: border-box;
+}

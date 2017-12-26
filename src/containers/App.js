@@ -8,6 +8,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+      <h1>Blood Sugar Monitor</h1>
         <InputPanel />
         <OutputPanel />
       </div>

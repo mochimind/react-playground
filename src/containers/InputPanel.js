@@ -10,7 +10,7 @@ class InputPanel extends Component {
     render() {
         return(
             <div className='inputPanel'>
-                <h1>Hello World</h1>
+                <h2>Input Your Activities</h2>
                 <ActivityInput />
                 <SubmitButton label="Submit" />
             </div>

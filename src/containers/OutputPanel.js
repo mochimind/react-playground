@@ -3,13 +3,20 @@ import React, {Component} from 'react';
 
 import './OutputPanel.css';
 import '../index.css';
-import SugarChart from './SugarChart';
+
+import SugarChart from '../components/SugarChart';
+import InfoPanel from '../components/InfoPanel';
 
 class OutputPanel extends Component {
+    state = {
+        data: []
+    };
+
     render() {
         return(
             <div className='outputPanel'>
-                <SugarChart data={[['Blood Sugar', 'Time'],[0,0]]} />
+                <SugarChart data={this.state.data} />
+                <InfoPanel />
             </div>
         );
     }

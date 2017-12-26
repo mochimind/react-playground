@@ -1,14 +1,18 @@
 import React, {Component} from 'react';
-import DataOutput from '../components/DataOutput';
 
+import ActivityInput from "../components/ActivityInput";
+import SubmitButton from "../components/SubmitButton";
+
+import './InputPanel.css';
+import '../index.css';
 
 class InputPanel extends Component {
     render() {
         return(
-            <div>
+            <div class='inputPanel'>
                 <h1>Hello World</h1>
-                <DataOutput label='test' value='testing, testing, 123' />
-                <DataOutput label='test2' value='testing, testing, 111' />
+                <ActivityInput />
+                <SubmitButton label="Submit" />
             </div>
         );
     }

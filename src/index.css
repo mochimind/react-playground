@@ -3,3 +3,29 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.dataColLabel {
+  width: 40%;
+  box-sizing: border-box;
+  display: inline-block;
+  text-align: center;
+}
+
+.dataColValue {
+  width: 60%;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.dataContainer {
+  margin: 3px 10px 3px 10px;
+}
+
+.button {
+  width: 100%;
+  display: block;
+  cursor: pointer;
+  padding: 20px 0px 20px 0px;
+  box-sizing: border-box;
+  text-align: center;
+}

@@ -1,30 +1,9 @@
-.dataOutput {
-    text-align: center;
-    margin: 5px 20px 5px 20px;
-}
-
-.dataOutput .label {
-    box-sizing: border-box;
-    display: inline-block;
-    width: 40%;
-} 
-
-.dataOutput .value {
-    box-sizing: border-box;
-    width: 60%;
-    display: inline-block;
+.dataOutput .dataColValue {
     padding: 4px;
     background-color: #ccc;
+    text-align: center;
 }
 
-@media (min-width: 500px) {
-    .dataOutput .label {
-        width: 200px;
-    }
-}
-
-@media (min-width: 501px) {
-    .dataOutput .value {
-        width: 300px;
-    }
+.dataOutput .dataColValue:empty:before {
+    content: "\200b";
 }

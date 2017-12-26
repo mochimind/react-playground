@@ -1,11 +1,12 @@
 import React from 'react';
 import './DataOutput.css';
+import '../index.css';
 
 const dataOutput = (props) => {
     return (
-        <div class='dataOutput'>
-            <span class='label'>{props.label}</span>
-            <span class='value'>{props.value}</span>
+        <div class='dataContainer dataOutput'>
+            <span class='dataColLabel'>{props.label}</span>
+            <span class='dataColValue'>{props.value}</span>
         </div>
     );
 };

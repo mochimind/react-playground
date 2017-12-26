@@ -7,7 +7,7 @@ import DataOutput from './DataOutput';
 
 const activityInput = (props) => {
     return (
-        <div class='activityInput'>
+        <div className='activityInput'>
             <ActivityEntry label='Activity' value = "" />
             <DateEntry label='Time' value={(new Date()).toLocaleString()} />
             <DataOutput label='ID' value="" />

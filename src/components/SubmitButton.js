@@ -6,8 +6,8 @@ import '../index.css';
 // may not be worth it to put this in its own component
 const submitButton = (props) => {
     return (
-        <div class='submitButton'>
-            <span class='button submitButton' onClick={props.clicked}>{props.label}</span>
+        <div className='submitButton'>
+            <span className='button submitButton' onClick={props.clicked}>{props.label}</span>
         </div>
     );
 };

@@ -9,7 +9,7 @@ import '../index.css';
 class InputPanel extends Component {
     render() {
         return(
-            <div class='inputPanel'>
+            <div className='inputPanel'>
                 <h1>Hello World</h1>
                 <ActivityInput />
                 <SubmitButton label="Submit" />

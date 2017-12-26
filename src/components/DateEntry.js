@@ -6,9 +6,9 @@ import '../index.css';
 // TODO: implement a visual datetime picker
 const dateEntry = (props) => {
     return (
-        <div class='dataContainer dateEntry'>
-            <span class='dataColLabel'>{props.label}</span>
-            <input class='dataColValue' type='text' value={props.value}></input>
+        <div className='dataContainer dateEntry'>
+            <span className='dataColLabel'>{props.label}</span>
+            <input className='dataColValue' type='text' value={props.value}></input>
         </div>
     );
 };

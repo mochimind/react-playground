@@ -4,9 +4,9 @@ import '../index.css';
 
 const dataOutput = (props) => {
     return (
-        <div class='dataContainer dataOutput'>
-            <span class='dataColLabel'>{props.label}</span>
-            <span class='dataColValue'>{props.value}</span>
+        <div className='dataContainer dataOutput'>
+            <span className='dataColLabel'>{props.label}</span>
+            <span className='dataColValue'>{props.value}</span>
         </div>
     );
 };

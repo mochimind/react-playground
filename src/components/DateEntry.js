@@ -8,7 +8,7 @@ const dateEntry = (props) => {
     return (
         <div className='dataContainer dateEntry'>
             <span className='dataColLabel'>{props.label}</span>
-            <input className='dataColValue' type='text' value={props.value}></input>
+            <input className='dataColValue' type='text' value={props.value} onChange={props.changed}></input>
         </div>
     );
 };

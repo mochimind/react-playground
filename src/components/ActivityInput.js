@@ -5,15 +5,20 @@ import DateEntry from './DateEntry';
 import ActivityEntry from './ActivityEntry';
 import DataOutput from './DataOutput';
 
+// receives dateVal - the current date time string, 
+// activityVal - the current activity string
+// activityInfo - an ActivityTemplate (which can be null)
+// activitChange - a handler for any changes in the activity
+// dateChange - a handler for any changes in the date time value
 const activityInput = (props) => {
     return (
         <div className='activityInput'>
-            <ActivityEntry label='Activity' value = "" />
-            <DateEntry label='Time' value={(new Date()).toLocaleString()} />
-            <DataOutput label='ID' value="" />
-
-            <DataOutput label='Glycemic Index' value="" />
-            <DataOutput label='Type' value="" />
+            <ActivityEntry label='Activity' value={props.activityVal} changed={props.activityChange} />
+            <DateEntry label='Time' value={props.dateVal} changed={props.dateChange}/>
+ 
+            <DataOutput label='ID' value={props.activityInfo != null ? props.activityInfo.ID : ""} />
+            <DataOutput label='Glycemic Index' value={props.activityInfo != null ? props.activityInfo.index : ""} />
+            <DataOutput label='Type' value={props.activityInfo != null ? props.activityInfo.type : ""} />
         </div>
     );
 };

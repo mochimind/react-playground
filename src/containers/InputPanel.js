@@ -24,6 +24,21 @@ class InputPanel extends Component {
         this.setState({curDate: event.target.value});
     }
 
+    handleSubmit = (event) => {
+        if (this.state.matchedActivity == null) {
+            this.props.messageUser("Please select an activity type!", "error");
+            return
+        }
+
+        if (this.state.curDate == null || this.state.curDate.trim().length === 0) {
+            this.props.messageUser("The date time you specified is invalid!", "error");
+            this.setState({curDate: (new Date()).toLocaleString()});
+            return;
+        }
+
+        this.props.messageUser("successfully added entry!", "success");
+    }
+
     render() {
         return(
             <div className='inputPanel'>
@@ -34,7 +49,7 @@ class InputPanel extends Component {
                     activityChange={this.handleActivityChange}
                     dateChange={this.handleDateChange}
                 />
-                <SubmitButton label="Submit" />
+                <SubmitButton label="Submit" clicked={this.handleSubmit} />
             </div>
         );
     }

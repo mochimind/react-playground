@@ -16,6 +16,11 @@ export const GetPotentialMatches = (_partial) => {
     return templates.filter((tok) => tok.description.toLowerCase().startsWith(_partial.toLowerCase()));
 }
 
+// creates a list of all descriptions
+export const GetDescriptions = () => {
+    return templates;
+}
+
 export const ActivityTypes = {
     EXERCISE: 'exercise',
     FOOD: 'food'

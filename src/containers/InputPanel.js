@@ -11,22 +11,13 @@ import * as TemplateFactory from "../data/TemplateFactory";
 class InputPanel extends Component {
     state = {
         activities: [],
-        curActivity: "",
         curDate: (new Date()).toLocaleString(),
         matchedActivity: null
     };
 
-    handleActivityChange = (event) => {
-        const segment = event.target.value;
-        let newActivity = null;
-        if (segment.length > 0) {
-            newActivity = TemplateFactory.GetBestMatch(segment);
-        } 
-        
-        this.setState({
-            curActivity: event.target.value,
-            matchedActivity: newActivity
-        });
+    handleActivityChange = (newVal) => {
+        console.log(newVal)
+        this.setState({matchedActivity: newVal})
     }
 
     handleDateChange = (event) => {
@@ -39,8 +30,7 @@ class InputPanel extends Component {
                 <h2>Input Your Activities</h2>
                 <ActivityInput 
                     dateVal={this.state.curDate}
-                    activityVal={this.state.curActivity}
-                    activityInfo={this.state.matchedActivity}
+                    activityVal={this.state.matchedActivity}
                     activityChange={this.handleActivityChange}
                     dateChange={this.handleDateChange}
                 />

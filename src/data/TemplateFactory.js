@@ -4,16 +4,16 @@ export const GetExactByID = (id, type) => {
 };
 
 export const GetExactByValue = (description, type) => {
-    return templates.find((tok) => tok.description === description && tok.type === type);
+    return templates.find((tok) => tok.description.toLowerCase() === description.toLowerCase() && tok.type === type);
 };
 
 // returns the first match that starts with _partial
 export const GetBestMatch = (_partial) => {
-    return templates.find((tok) => tok.description.startsWith(_partial));
+    return templates.find((tok) => tok.description.toLowerCase().startsWith(_partial.toLowerCase()));
 };
 
 export const GetPotentialMatches = (_partial) => {
-    return templates.filter((tok) => tok.description.startsWith(_partial));
+    return templates.filter((tok) => tok.description.toLowerCase().startsWith(_partial.toLowerCase()));
 }
 
 export const ActivityTypes = {

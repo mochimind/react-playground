@@ -16,7 +16,8 @@ const activityInput = (props) => {
             <ActivityEntry label='Activity' value={props.activityVal} changed={props.activityChange} />
             <DateEntry label='Time' value={props.dateVal} changed={props.dateChange}/>
  
-            <DataOutput label='ID' value={props.activityInfo != null ? props.activityInfo.ID : ""} />
+            <DataOutput label='ID' value={props.activityInfo != null ? props.activityInfo.id : ""} />
+            <DataOutput label='Description' value={props.activityInfo != null ? props.activityInfo.description : ""} />
             <DataOutput label='Glycemic Index' value={props.activityInfo != null ? props.activityInfo.index : ""} />
             <DataOutput label='Type' value={props.activityInfo != null ? props.activityInfo.type : ""} />
         </div>

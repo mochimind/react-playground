@@ -6,6 +6,8 @@ import SubmitButton from "../components/SubmitButton";
 import './InputPanel.css';
 import '../index.css';
 
+import * as TemplateFactory from "../data/TemplateFactory";
+
 class InputPanel extends Component {
     state = {
         activities: [],
@@ -15,7 +17,16 @@ class InputPanel extends Component {
     };
 
     handleActivityChange = (event) => {
-        this.setState({curActivity: event.target.value});
+        const segment = event.target.value;
+        let newActivity = null;
+        if (segment.length > 0) {
+            newActivity = TemplateFactory.GetBestMatch(segment);
+        } 
+        
+        this.setState({
+            curActivity: event.target.value,
+            matchedActivity: newActivity
+        });
     }
 
     handleDateChange = (event) => {

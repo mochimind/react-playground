@@ -1,9 +1,11 @@
 
 import Activity from '../activity/Activity';
-import * as state from './State';
+import GeneratedSegment from './GeneratedSegment';
+import * as templates from '../activity/TemplateFactory';
 
 // to simplify the implementation in visual components, we manage the instance of Timeline here
 export const stat = new Timeline();
+
 
 export class Timeline {
     // a sequential list of segments which create a graph
@@ -26,19 +28,55 @@ export class Timeline {
         splitSegments = containingSegment != null ? containingSegment.split(activity.end) : null;
 
         // add first half of split segment to internal segments
-        if (splitSegments != null && splitSegments[0] != null) { internalSegments.push(splitSegments[0]); }
+        if (splitSegments != null && splitSegments[0] != null) { 
+            internalSegments.push(splitSegments[0]);
+        } else {
+            // we ended up in non-segmented time, create a new empty segment 
+            const lastSegment = internalSegments.length !== 0 ? internalSegments[internalsegments.length - 1] : null;
+            let newSeg = new Segment(lastSegment != null ? lastSegment.end : activity.start, activity.end, 0, 0)
+            internalSegments.push(newSeg);
+            this.insertSegment(newSeg);
+        }
 
-        // remove any generated segments within the body
-        // replace with empty segment if generated was the only activity in the segment
+        let insertedItems = 0;
+        let newInternalSegments = [];
+        for (let i=0 ; i<internalSegments.length ; i++) {
+            // replace any generated segments within the body with empty regular segments
+            if (internalSegments[i] instanceof GeneratedSegment) {
+                internalSegments[i] = new Segment(internalSegments[i].start, internalSegments[i].end, 0, 0);
+                this.insertSegment(internalSegments[i]);
+            }
+            
+            // patch any non-segmented time inside the body with new empty segments
+            if (i>0 && internalSegments[i-1].end != internalSegments[i].start) {
+                let newBlankSeg = new Segment(internalSegments[i-1].end, internalSegments[i].start, 0, 0);
+                // add this activity to newly created segments
+                newBlankSeg.addActivity(activity);
 
-        // add this activity to all body segments
+                newInternalSegments.push(newBlankSeg);
+                this.insertSegment(newBlankSeg);
+            }
 
-        // adjust all activities in the body segment
+            newInternalSegments.push(internalSegments[i]);
 
-        // add generated segments to the end of this is the last segment
+
+            // adjust activities & changePerMin in the body segment
+            internalSegments[i].addActivity(activity);
+        }
+
+        // add generated segments to the end of this if this is the last segment
+        if (splitSegments == null || splitSegments[1] == null) {
+            let newGenSeg = new GeneratedSegment(activity.end, 0, templates.GENERATED_BASELINE, templates.GENERATED_CHANGE_PER_MIN, null);
+            this.insertSegment(newGenSeg);
+        }
     }
 
     remove = (activity) => {
+
+    }
+
+    // inserts segment chronologically into existing segments
+    insertSegment = (segment) => {
 
     }
 
@@ -61,7 +99,7 @@ export class Timeline {
     }
 
     getNextSegment = (segment) => {
-        
+
     }
 
 
@@ -91,11 +129,6 @@ export class Timeline {
     //       or some other method because this will factor in all states ever for this user
     //       this function is exponential calculation time
     getReading = (time) => {
-
-    }
-
-    // returns the state before this state or null if this is the first state
-    getPriorState = (state) => {
 
     }
 }

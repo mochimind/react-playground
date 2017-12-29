@@ -2,6 +2,7 @@ import Segment from './Segment';
 import * as util from '../Utils';
 import * as timeline from './Timeline';
 
+
 export default class GeneratedSegment extends Segment {
     constructor (start, startVal, steadystateVal, changePerMin, nextElement) {
         const lifespan = this.getLifespan(nextElement);

@@ -17,6 +17,26 @@ export default class Segment {
         this.changePerMin += activity.template.getChangePerMin();
     }
 
+    // tries to remove the activity from the specified segment
+    // returns true if the activity was successfully removed, false if activity was not part of segment
+    removeActivity = (activity) => {
+        for (let i=0 ; i<this.activities.length ; i++) {
+            if (this.activities[i] === activity) {
+                this.activities.splice(i,1);
+                this.changePerMin -= activity.template.getChangePerMin();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // returns true if this segment does not change anything AND doesn't have any activities left
+    // todo: we may need to replace changePerMin === 0 with some threshold due to floating point math
+    isRedundant = () => {
+        return (this.activities.length === 0 && this.changePerMin === 0);
+    }
+
     // returns the value at a specified time
     // if time is not specified, or larger than the end time, then the value at end time is returned
     getVal = (time=this.end) => {
@@ -28,7 +48,7 @@ export default class Segment {
         if (time > this.end) {
             time = this.end;
         }
-        
+
         const numMinutes = utils.DiffMinutes(time, this.start);
         return numMinutes * changePerMin;
     }

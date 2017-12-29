@@ -24,6 +24,10 @@ export default class GeneratedSegment extends Segment {
         console.log("error: trying to add an activity to a generated segment");
     }
 
+    extend = () => {
+        
+    }
+
     // almost the same as the parent's split. we just create a generated segment rather than a normal segment
     split = (time) => {
         const outVal = [];

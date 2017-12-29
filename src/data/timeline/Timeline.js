@@ -70,10 +70,36 @@ export class Timeline {
             let newGenSeg = new GeneratedSegment(activity.end, 0, templates.GENERATED_BASELINE, templates.GENERATED_CHANGE_PER_MIN, null);
             this.insertSegment(newGenSeg);
         }
+
+        this.recalculateSegments();
     }
 
     remove = (activity) => {
+        let lastNonRedundant = null;
+        for (let i=0 ; i<this.segments.length ; i++) {
+            // remove the activity from all segments
+            if (this.segments[i].removeActivity(activity)) {
+                // merge redundant segments
+                if (this.segments[i].isRedundant()) {
+                    this.segments.splice(i, 1);
+                    i--;
+            
+                    if (lastNonRedundant instanceof GeneratedSegment) {
+                        // we don't need to range extend generated segments because that'll be done automatically
+                        // when the segments are recalculated. Therefore, do nothing here
+                    } else {
+                        // create generated segments in non-segmented space
+                        // again, we don't do anything with the initialization of values and let the recalculation do it
+                        let newGenSeg = new GeneratedSegment(lastNonRedundant.end, 0, templates.GENERATED_BASELINE, templates.GENERATED_CHANGE_PER_MIN, null);
+                    }
+                } else {
+                    lastNonRedundant = this.segments[i];
+                }
+                
+            }
+        }
 
+        this.recalculateSegments();
     }
 
     // inserts segment chronologically into existing segments
@@ -83,6 +109,11 @@ export class Timeline {
 
     // replaces an existing segment with a new segment
     replaceSegment = (oldSegment, newSegment) => {
+
+    }
+
+    // recalculates the startValues for each segment. Also recalculates the length of generated segments
+    recalculateSegments = () => {
 
     }
 
@@ -108,33 +139,13 @@ export class Timeline {
 
     }
 
-
-
-    // returns an array of objects with the following properties:
-    // {time: <time of peak>, value: <value at peak>}
-    getPeaks = (start, finish) => {
-
-    }
-
     // returns an array of numbers that represent the hourly readings between start & finish
     // data rounded to the nearest hour
     getHourlyData = (start, finish) => {
 
     }
 
-    // returns an array of  states between start & finish inclusive
-    getStates = (start, finish) => {
-
-    }
-
     getGlycationMinutes = (start, finish) => {
-
-    }
-
-    // todo: we will need to do some optimization here either through limiting database queries
-    //       or some other method because this will factor in all states ever for this user
-    //       this function is exponential calculation time
-    getReading = (time) => {
 
     }
 }

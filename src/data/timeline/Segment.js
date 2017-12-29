@@ -53,6 +53,11 @@ export default class Segment {
         return numMinutes * changePerMin;
     }
 
+    // recalculates the startVal of this segment
+    recalculate = (lastSeg, nextSeg) => {
+        this.startVal = lastSeg.startVal + lastSeg.getVal(this.start);
+    }
+
     // breaks apart the segment at time if possible and returns an array of 2 elements
     // the first segment will be from start [inclusive] to time [exclusive]
     // the second segment will be from time [inclusive] to end [exclusive]

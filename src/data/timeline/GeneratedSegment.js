@@ -24,8 +24,12 @@ export default class GeneratedSegment extends Segment {
         console.log("error: trying to add an activity to a generated segment");
     }
 
-    extend = () => {
-        
+    // generated segments are different from regular segments in that they need to recalculate their length as well
+    recalculate = (lastSeg, nextSeg) => {
+        const lifespan = this.getLifespan(nextSeg);
+        this.end = util.AdjustMinutes(this.start, lifespan);
+
+        super(lastSeg, nextSeg);
     }
 
     // almost the same as the parent's split. we just create a generated segment rather than a normal segment

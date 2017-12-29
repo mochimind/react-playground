@@ -129,7 +129,13 @@ export class Timeline {
 
     // recalculates the startValues for each segment. Also recalculates the length of generated segments
     recalculateSegments = () => {
-
+        for (let i=0 ; i<this.segments.length ; i++) {
+            if (i == 0) {
+                this.segments[i].startVal = templates.stat.GENERATED_BASELINE;
+            } else {
+                this.segments[i].recalculate(this.segments[i-1], this.segments[i+1]);
+            }
+        }
     }
 
     // returns the one segment that contains time
@@ -151,7 +157,12 @@ export class Timeline {
     }
 
     getNextSegment = (segment) => {
-
+        for (let i=0 ; i<this.segments.length ; i++) {
+            if (this.segments[i] === segment) {
+                return this.segments[i+1];
+            }
+        }
+        return null;
     }
 
     // returns an array of numbers that represent the hourly readings between start & finish

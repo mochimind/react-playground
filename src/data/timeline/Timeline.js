@@ -43,8 +43,9 @@ export class Timeline {
         for (let i=0 ; i<internalSegments.length ; i++) {
             // replace any generated segments within the body with empty regular segments
             if (internalSegments[i] instanceof GeneratedSegment) {
-                internalSegments[i] = new Segment(internalSegments[i].start, internalSegments[i].end, 0, 0);
-                this.insertSegment(internalSegments[i]);
+                let newReplaceSeg = new Segment(internalSegments[i].start, internalSegments[i].end, 0, 0);
+                this.replaceSegment(internalSegments[i], newReplaceSeg);
+                internalSegments[i] = newReplaceSeg;
             }
             
             // patch any non-segmented time inside the body with new empty segments
@@ -77,6 +78,11 @@ export class Timeline {
 
     // inserts segment chronologically into existing segments
     insertSegment = (segment) => {
+
+    }
+
+    // replaces an existing segment with a new segment
+    replaceSegment = (oldSegment, newSegment) => {
 
     }
 

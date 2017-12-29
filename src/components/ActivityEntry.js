@@ -7,7 +7,7 @@ import '../index.css';
 import 'react-select/dist/react-select.css'
 import 'react-virtualized/styles.css'
 import 'react-virtualized-select/styles.css'
-import * as TemplateFactory from '../data/TemplateFactory';
+import * as TemplateFactory from '../data/activity/TemplateFactory';
 
 // inputs: label - the text label to display
 // value: the value inside the textBox

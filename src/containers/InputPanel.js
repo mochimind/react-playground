@@ -6,7 +6,7 @@ import SubmitButton from "../components/SubmitButton";
 import './InputPanel.css';
 import '../index.css';
 
-import * as TemplateFactory from "../data/TemplateFactory";
+import * as TemplateFactory from "../data/activity/TemplateFactory";
 
 class InputPanel extends Component {
     state = {

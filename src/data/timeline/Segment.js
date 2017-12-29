@@ -1,8 +1,5 @@
 import * as util from '../Utils';
 
-BASELINE_SUGAR = 80;
-BASELINE_CHANGE_PER_MIN = 1;
-
 export default class Segment {
     constructor(start, end, startVal, changePerMin) {
         this.start = start;
@@ -49,8 +46,8 @@ export default class Segment {
             time = this.end;
         }
 
-        const numMinutes = utils.DiffMinutes(time, this.start);
-        return numMinutes * changePerMin;
+        const numMinutes = util.DiffMinutes(time, this.start);
+        return numMinutes * this.changePerMin;
     }
 
     // recalculates the startVal of this segment

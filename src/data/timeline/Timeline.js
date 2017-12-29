@@ -1,15 +1,14 @@
 
 import Activity from '../activity/Activity';
+import Segment from './Segment';
 import GeneratedSegment from './GeneratedSegment';
 import * as templates from '../activity/TemplateFactory';
 
-// to simplify the implementation in visual components, we manage the instance of Timeline here
-export const stat = new Timeline();
-
-
 export class Timeline {
     // a sequential list of segments which create a graph
-    segments = [];
+    constructor() {
+        this.segments = [];
+    }
 
     insert = (activity) => {
         // split any straddling beginning segments and create a new segment
@@ -32,7 +31,7 @@ export class Timeline {
             internalSegments.push(splitSegments[0]);
         } else {
             // we ended up in non-segmented time, create a new empty segment 
-            const lastSegment = internalSegments.length !== 0 ? internalSegments[internalsegments.length - 1] : null;
+            const lastSegment = internalSegments.length !== 0 ? internalSegments[internalSegments.length - 1] : null;
             let newSeg = new Segment(lastSegment != null ? lastSegment.end : activity.start, activity.end, 0, 0)
             internalSegments.push(newSeg);
             this.insertSegment(newSeg);
@@ -131,7 +130,7 @@ export class Timeline {
     recalculateSegments = () => {
         for (let i=0 ; i<this.segments.length ; i++) {
             if (i == 0) {
-                this.segments[i].startVal = templates.stat.GENERATED_BASELINE;
+                this.segments[i].startVal = templates.GENERATED_BASELINE;
             } else {
                 this.segments[i].recalculate(this.segments[i-1], this.segments[i+1]);
             }
@@ -165,14 +164,21 @@ export class Timeline {
         return null;
     }
 
-    // returns an array of numbers that represent the hourly readings between start & finish
-    // data rounded to the nearest hour
-    getHourlyData = (start, finish) => {
+    getGraphData = () => {
+        const outVal = [];
+        for (let i=0 ; i<this.segments.length ; i++) {
+            outVal.push({startVal: this.segments[i].startVal, slope: this.segments[i].changePerMin});
+        }
 
+        return outVal;
     }
 
     getGlycationMinutes = (start, finish) => {
 
     }
 }
+
+// to simplify the implementation in visual components, we manage the instance of Timeline here
+export const stat = new Timeline();
+
 

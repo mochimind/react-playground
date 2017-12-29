@@ -5,9 +5,10 @@ import * as timeline from './Timeline';
 
 export default class GeneratedSegment extends Segment {
     constructor (start, startVal, steadystateVal, changePerMin, nextElement) {
-        const lifespan = this.getLifespan(nextElement);
+        super(start, 0, startVal, changePerMin);
 
-        super(start, util.AdjustMinutes(start, lifespan), startVal, changePerMin);
+        const lifespan = this.getLifespan(nextElement);
+        this.end = util.AdjustMinutes(start, lifespan);
         this.steadystateVal = steadystateVal;
     }
 
@@ -15,8 +16,8 @@ export default class GeneratedSegment extends Segment {
     // to get the current value to the steadystate value OR when the next element occurs - whichever is smaller
     getLifespan = (nextElement) => {
         return nextElement != null ? 
-            Math.min(util.DiffMinutes(nextElement.start, start), Math.abs(startVal - steadystateVal) / changePerMin) : 
-            Math.abs(startVal - steadystateVal) / changePerMin;
+            Math.min(util.DiffMinutes(nextElement.start, this.start), Math.abs(this.startVal - this.steadystateVal) / this.changePerMin) : 
+            Math.abs(this.startVal - this.steadystateVal) / this.changePerMin;
 
     }
 
@@ -26,10 +27,11 @@ export default class GeneratedSegment extends Segment {
 
     // generated segments are different from regular segments in that they need to recalculate their length as well
     recalculate = (lastSeg, nextSeg) => {
+        Segment.prototype.recalculate.call(this, lastSeg, nextSeg);
+
         const lifespan = this.getLifespan(nextSeg);
         this.end = util.AdjustMinutes(this.start, lifespan);
 
-        super(lastSeg, nextSeg);
     }
 
     // almost the same as the parent's split. we just create a generated segment rather than a normal segment

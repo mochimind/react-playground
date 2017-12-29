@@ -7,6 +7,8 @@ import './InputPanel.css';
 import '../index.css';
 
 import * as TemplateFactory from "../data/activity/TemplateFactory";
+import * as timeline from '../data/timeline/Timeline';
+import Activity from '../data/activity/Activity';
 
 class InputPanel extends Component {
     state = {
@@ -35,8 +37,18 @@ class InputPanel extends Component {
             this.setState({curDate: (new Date()).toLocaleString()});
             return;
         }
+        const userDate = new Date(this.state.curDate);
+        if (userDate.getTime() === 0) {
+            this.props.messageUser("The date time you specified is invalid!", "error");
+            this.setState({curDate: (new Date()).toLocaleString()});            
+            return;
+        }
 
         this.props.messageUser("successfully added entry!", "success");
+        const newActivity = new Activity(this.state.matchedActivity, );
+
+        timeline.stat.insert();
+
     }
 
     render() {

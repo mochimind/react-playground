@@ -103,13 +103,28 @@ export class Timeline {
     }
 
     // inserts segment chronologically into existing segments
+    // note: function does not create generated segments or check impact of inserts, it just blindly inserts
     insertSegment = (segment) => {
-
+        for (let i=0 ; i<this.segments.length ; i++) {
+            if (this.segments[i].end <= segment.start) {
+                this.segments.splice(i,0,segment);
+                return;
+            }
+        }
+        // we've reached the end and still no insert, insert it at the very end
+        this.segments.push(segment);
     }
 
     // replaces an existing segment with a new segment
     replaceSegment = (oldSegment, newSegment) => {
+        for (let i=0 ; i<this.segments.length ; i++) {
+            if (this.segments[i] === oldSegment) {
+                this.segments[i] = newSegment;
+                return true;
+            }
+        }
 
+        return false;
     }
 
     // recalculates the startValues for each segment. Also recalculates the length of generated segments

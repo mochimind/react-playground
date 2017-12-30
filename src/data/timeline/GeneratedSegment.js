@@ -16,7 +16,7 @@ export default class GeneratedSegment extends Segment {
     // to get the current value to the steadystate value OR when the next element occurs - whichever is smaller
     getLifespan = (nextElement) => {
         return nextElement != null ? 
-            Math.min(util.DiffMinutes(nextElement.start, this.start), Math.abs(this.startVal - this.steadystateVal) / this.changePerMin) : 
+            Math.min(util.DiffMinutes(this.start, nextElement.start), Math.abs(this.startVal - this.steadystateVal) / this.changePerMin) : 
             Math.abs(this.startVal - this.steadystateVal) / this.changePerMin;
 
     }

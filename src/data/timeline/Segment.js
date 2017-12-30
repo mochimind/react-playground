@@ -46,7 +46,7 @@ export default class Segment {
             time = this.end;
         }
 
-        const numMinutes = util.DiffMinutes(time, this.start);
+        const numMinutes = util.DiffMinutes(this.start, time);
         return numMinutes * this.changePerMin;
     }
 

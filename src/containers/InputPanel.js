@@ -37,6 +37,7 @@ class InputPanel extends Component {
             return;
         }
         const userDate = new Date(this.state.curDate);
+
         if (userDate.getTime() === 0) {
             this.props.messageUser("The date time you specified is invalid!", "error");
             this.setState({curDate: (new Date()).toLocaleString()});
@@ -44,7 +45,7 @@ class InputPanel extends Component {
         }
 
         this.props.messageUser("successfully added entry!", "success");
-        const newActivity = new Activity(this.state.matchedActivity, );
+        const newActivity = new Activity(this.state.matchedActivity, userDate);
 
         timeline.stat.insert(newActivity);
 

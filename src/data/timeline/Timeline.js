@@ -17,15 +17,24 @@ export class Timeline {
         let splitSegments = containingSegment != null ? containingSegment.split(activity.start) : null;
         let internalSegments = [];
 
+        console.log(splitSegments);
+
         // add second half of split segment to internal segments
         if (splitSegments != null && splitSegments[1] != null) { internalSegments.push(splitSegments[1]); }
 
         // add fully contained segments to internal segments
-        internalSegments = [...internalSegments, ...this.getFullyContainedSegments(activity.start, activity.end)];
+        const bodySegments = this.getFullyContainedSegments(activity.start, activity.end);
+        if (bodySegments != null) {
+            internalSegments.concat(bodySegments);
+        }
+
+        console.log(bodySegments);
 
         // split straddling ending segment to create a new segment
         containingSegment = this.getContainingSegment(activity.end);
         splitSegments = containingSegment != null ? containingSegment.split(activity.end) : null;
+
+        console.log(splitSegments);
 
         // add first half of split segment to internal segments
         if (splitSegments != null && splitSegments[0] != null) { 
@@ -71,6 +80,7 @@ export class Timeline {
         }
 
         this.recalculateSegments();
+        console.log(this.segments);
     }
 
     remove = (activity) => {
@@ -105,7 +115,7 @@ export class Timeline {
     // note: function does not create generated segments or check impact of inserts, it just blindly inserts
     insertSegment = (segment) => {
         for (let i=0 ; i<this.segments.length ; i++) {
-            if (this.segments[i].end <= segment.start) {
+            if (this.segments[i].start > segment.start) {
                 this.segments.splice(i,0,segment);
                 return;
             }
@@ -128,6 +138,7 @@ export class Timeline {
 
     // recalculates the startValues for each segment. Also recalculates the length of generated segments
     recalculateSegments = () => {
+        console.log(this.segments);
         for (let i=0 ; i<this.segments.length ; i++) {
             if (i === 0) {
                 this.segments[i].startVal = templates.GENERATED_BASELINE;
@@ -142,9 +153,9 @@ export class Timeline {
     // if a segment ends exactly on time, it does not count as containing time, but a segment
     // starting exactly at time is considered as containing time
     getContainingSegment = (time) => {
-        for (let i=0 ; i<this.segments ; i++) {
-            if (this.segment[i].start <= time && this.segment[i].end > time) {
-                return this.segment[i];
+        for (let i=0 ; i<this.segments.length ; i++) {
+            if (this.segments[i].start <= time && this.segments[i].end > time) {
+                return this.segments[i];
             }
         }
 
@@ -153,7 +164,7 @@ export class Timeline {
 
     // returns an array of segments that start after start and end before end
     getFullyContainedSegments = (start, end) => {
-        this.segments.filter((tok) => tok.start >= start && tok.end <= end);
+        return this.segments.filter((tok) => tok.start >= start && tok.end <= end);
     }
 
     getNextSegment = (segment) => {
@@ -169,10 +180,10 @@ export class Timeline {
         const outVal = [];
         for (let i=0 ; i<this.segments.length ; i++) {
             outVal.push({
-                starTime: this.segments[i].start,
+                startTime: this.segments[i].start,
                 startVal: this.segments[i].startVal, 
                 endTime: this.segments[i].end,
-                endVal: this.sgements[i].startVal + this.segments[i].getVal()});
+                endVal: this.segments[i].startVal + this.segments[i].getVal()});
         }
 
         return outVal;

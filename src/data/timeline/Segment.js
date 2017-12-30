@@ -51,7 +51,7 @@ export default class Segment {
     }
 
     // recalculates the startVal of this segment
-    recalculate = (lastSeg, nextSeg) => {
+    recalculate (lastSeg, nextSeg) {
         this.startVal = lastSeg.startVal + lastSeg.getVal(this.start);
     }
 
@@ -72,6 +72,8 @@ export default class Segment {
         } else {
             outVal.push(null);
         }
+
+        return outVal;
     }
 }
 

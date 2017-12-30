@@ -26,12 +26,11 @@ export default class GeneratedSegment extends Segment {
     }
 
     // generated segments are different from regular segments in that they need to recalculate their length as well
-    recalculate = (lastSeg, nextSeg) => {
-        Segment.prototype.recalculate.call(this, lastSeg, nextSeg);
+    recalculate(lastSeg, nextSeg) {
+        super.recalculate(lastSeg, nextSeg)
 
         const lifespan = this.getLifespan(nextSeg);
         this.end = util.AdjustMinutes(this.start, lifespan);
-
     }
 
     // almost the same as the parent's split. we just create a generated segment rather than a normal segment
@@ -50,6 +49,8 @@ export default class GeneratedSegment extends Segment {
         } else {
             outVal.push(null);
         }
+
+        return outVal;
     }
 }
 

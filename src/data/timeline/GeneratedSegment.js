@@ -44,6 +44,8 @@ export default class GeneratedSegment extends Segment {
     // almost the same as the parent's split. we just create a generated segment rather than a normal segment
     split = (time) => {
         const outVal = [];
+
+        const oldEndTime = this.end;
         if (time.getTime() !== this.start.getTime()) {
             outVal.push (this);
             this.end = time;
@@ -51,7 +53,7 @@ export default class GeneratedSegment extends Segment {
             outVal.push(null);
         }
 
-        if (time.getTime() !== this.end.getTime()) {
+        if (time.getTime() !== oldEndTime.getTime()) {
             outVal.push(new GeneratedSegment(time, this.startVal, this.steadystateVal, 
                 this.changePerMin, timeline.stat.getNextSegment(this)));
         } else {

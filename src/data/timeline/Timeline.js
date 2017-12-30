@@ -19,7 +19,7 @@ export class Timeline {
         let internalSegments = [];
 
         // add second half of split segment to internal segments
-        if (splitSegments != null && splitSegments[1] != null) { internalSegments.push(splitSegments[1]); }
+        if (splitSegments != null && splitSegments[0] != null && splitSegments[1] != null) { internalSegments.push(splitSegments[1]); }
 
         // add fully contained segments to internal segments
         const bodySegments = this.getFullyContainedSegments(activity.start, activity.end);
@@ -36,7 +36,7 @@ export class Timeline {
             internalSegments.push(splitSegments[0]);
         }
 
-        if (splitSegments == null || splitSegments[1] == null || splitSegments[1].start !== activity.end) {
+        if (splitSegments == null || splitSegments[1] == null || splitSegments[1].start.getTime() !== activity.end.getTime()) {
             // we ended up in non-segmented time, create a new empty segment 
             const lastSegment = internalSegments.length !== 0 ? internalSegments[internalSegments.length - 1] : null;
             let newSeg = new Segment(lastSegment != null ? lastSegment.end : activity.start, activity.end, 0, 0)
@@ -49,25 +49,28 @@ export class Timeline {
         if (internalSegments.length === 0) {
             let newBlankSeg = new Segment(activity.start, activity.end, 0, 0);
             newInternalSegments.push(newBlankSeg);
-            this.insertSegment(newBlankSeg);    
+            this.insertSegment(newBlankSeg);
         } else {
+            // TODO: optimize out this for loop - we shouldn't need to iterate over the data twice
             for (let i=0 ; i<internalSegments.length ; i++) {
                 // replace any generated segments within the body with empty regular segments
                 if (internalSegments[i] instanceof GeneratedSegment) {
-                    let newReplaceSeg = new Segment(internalSegments[i].start, internalSegments[i].end, 0, 0);
-                    this.replaceSegment(internalSegments[i], newReplaceSeg);
-                    internalSegments[i] = newReplaceSeg;
+                    this.removeSegment(internalSegments[i]);
+                    internalSegments.splice(i,1);
+                    i--;
                 }
-                
+            }
+
+            for (let i=0 ; i<internalSegments.length ; i++) {
                 // patch any non-segmented time inside the body with new empty segments
                 let tempStart = -1 , tempEnd = -1;
-                if (i === 0 && internalSegments[i].start !== activity.start) {
+                if (i === 0 && internalSegments[i].start.getTime() !== activity.start.getTime()) {
                     tempStart = activity.start;
                     tempEnd = internalSegments[0].start;
-                } else if (i === internalSegments.length - 1 && internalSegments[i].end !== activity.end ) {
+                } else if (i === internalSegments.length - 1 && internalSegments[i].end.getTime() !== activity.end.getTime() ) {
                     tempStart = internalSegments[internalSegments.length - 1].end;
                     tempEnd = activity.end;
-                } else if (i > 0 && internalSegments[i-1].end !== internalSegments[i].start) {
+                } else if (i > 0 && internalSegments[i-1].end.getTime() !== internalSegments[i].start.getTime()) {
                     tempStart = internalSegments[i-1].end;
                     tempEnd = internalSegments[i].start;
                 }
@@ -148,6 +151,15 @@ export class Timeline {
         return false;
     }
 
+    removeSegment = (segment) => {
+        for (let i=0 ; i<this.segments.length ; i++) {
+            if (this.segments[i] === segment) {
+                this.segments.splice(i,1);
+                return;
+            }
+        }
+    }
+
     // recalculates the startValues for each segment. Also recalculates the length of generated segments
     recalculateSegments = () => {
         for (let i=0 ; i<this.segments.length ; i++) {
@@ -175,7 +187,7 @@ export class Timeline {
 
     // returns an array of segments that start after start and end before end
     getFullyContainedSegments = (start, end) => {
-        return this.segments.filter((tok) => tok.start >= start && tok.end <= end);
+        return this.segments.filter((tok) => tok.start.getTime() >= start.getTime() && tok.end.getTime() <= end.getTime());
     }
 
     getNextSegment = (segment) => {

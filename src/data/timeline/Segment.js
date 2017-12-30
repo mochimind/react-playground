@@ -61,6 +61,7 @@ export default class Segment {
     // the second segment will be from time [inclusive] to end [exclusive]
     split = (time) => {
         const outVal = [];
+        const oldEndTime = this.end;
         if (time.getTime() !== this.start.getTime()) {
             outVal.push (this);
             this.end = time;
@@ -68,8 +69,10 @@ export default class Segment {
             outVal.push(null);
         }
 
-        if (time.getTime() !== this.end.getTime()) {
-            outVal.push(new Segment(time, this.end, this.startVal, this.changePerMin));
+        if (time.getTime() !== oldEndTime.getTime()) {
+            const newSeg = new Segment(time, oldEndTime, this.startVal, this.changePerMin);
+            newSeg.activities = [...this.activities];
+            outVal.push(newSeg);
         } else {
             outVal.push(null);
         }

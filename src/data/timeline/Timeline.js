@@ -19,7 +19,10 @@ export class Timeline {
         let internalSegments = [];
 
         // add second half of split segment to internal segments
-        if (splitSegments != null && splitSegments[0] != null && splitSegments[1] != null) { internalSegments.push(splitSegments[1]); }
+        if (splitSegments != null && splitSegments[0] != null && splitSegments[1] != null) { 
+            // split segment creates two segments from one, so we need to add the created one to our actual list
+            this.insertSegment(splitSegments[1]); 
+        }
 
         // add fully contained segments to internal segments
         const bodySegments = this.getFullyContainedSegments(activity.start, activity.end);
@@ -34,6 +37,11 @@ export class Timeline {
         // add first half of split segment to internal segments
         if (splitSegments != null && splitSegments[0] != null) {
             internalSegments.push(splitSegments[0]);
+
+            // since we created a segments here, we need to add the second segment to our actual list
+            if (splitSegments[1] != null) {
+                this.insertSegment(splitSegments[1]);
+            }
         }
 
         if (splitSegments == null || splitSegments[1] == null || splitSegments[1].start.getTime() !== activity.end.getTime()) {
@@ -52,12 +60,12 @@ export class Timeline {
             this.insertSegment(newBlankSeg);
         } else {
             // TODO: optimize out this for loop - we shouldn't need to iterate over the data twice
-            for (let i=0 ; i<internalSegments.length ; i++) {
+            for (let j=0 ; j<internalSegments.length ; j++) {
                 // replace any generated segments within the body with empty regular segments
-                if (internalSegments[i] instanceof GeneratedSegment) {
-                    this.removeSegment(internalSegments[i]);
-                    internalSegments.splice(i,1);
-                    i--;
+                if (internalSegments[j] instanceof GeneratedSegment) {
+                    this.removeSegment(internalSegments[j]);
+                    internalSegments.splice(j,1);
+                    j--;
                 }
             }
 

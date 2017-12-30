@@ -10,7 +10,6 @@ const sugarChart = (props) => {
     if (props.data == null || props.data.length === 0) {
         return <div className='chartContainer'></div>;
     } else {
-        console.log(new Date());
         return (
             <div className='chartContainer'>
                 <Chart

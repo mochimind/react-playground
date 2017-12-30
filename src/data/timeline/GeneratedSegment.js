@@ -16,8 +16,8 @@ export default class GeneratedSegment extends Segment {
     // to get the current value to the steadystate value OR when the next element occurs - whichever is smaller
     getLifespan = (nextElement) => {
         return nextElement != null ? 
-            Math.min(util.DiffMinutes(this.start, nextElement.start), Math.abs(this.startVal - this.steadystateVal) / this.changePerMin) : 
-            Math.abs(this.startVal - this.steadystateVal) / this.changePerMin;
+            Math.min(util.DiffMinutes(this.start, nextElement.start), Math.abs((this.startVal - this.steadystateVal) / -this.changePerMin)) : 
+            Math.abs((this.startVal - this.steadystateVal) / -this.changePerMin);
 
     }
 
@@ -27,23 +27,31 @@ export default class GeneratedSegment extends Segment {
 
     // generated segments are different from regular segments in that they need to recalculate their length as well
     recalculate(lastSeg, nextSeg) {
-        super.recalculate(lastSeg, nextSeg)
+        super.recalculate(lastSeg, nextSeg);
+
+        // adjust the generated segment to move towards the steadystate Val
+        if (this.startVal > this.steadystateVal) {
+            this.changePerMin = -Math.abs(this.changePerMin);
+        } else {
+            this.changePerMin = Math.abs(this.changePerMin);
+        }
 
         const lifespan = this.getLifespan(nextSeg);
+
         this.end = util.AdjustMinutes(this.start, lifespan);
     }
 
     // almost the same as the parent's split. we just create a generated segment rather than a normal segment
     split = (time) => {
         const outVal = [];
-        if (time !== this.start) {
+        if (time.getTime() !== this.start.getTime()) {
             outVal.push (this);
             this.end = time;
         } else {
             outVal.push(null);
         }
 
-        if (time !== this.end) {
+        if (time.getTime() !== this.end.getTime()) {
             outVal.push(new GeneratedSegment(time, this.startVal, this.steadystateVal, 
                 this.changePerMin, timeline.stat.getNextSegment(this)));
         } else {

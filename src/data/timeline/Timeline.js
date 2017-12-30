@@ -17,29 +17,25 @@ export class Timeline {
         let splitSegments = containingSegment != null ? containingSegment.split(activity.start) : null;
         let internalSegments = [];
 
-        console.log(splitSegments);
-
         // add second half of split segment to internal segments
         if (splitSegments != null && splitSegments[1] != null) { internalSegments.push(splitSegments[1]); }
 
         // add fully contained segments to internal segments
         const bodySegments = this.getFullyContainedSegments(activity.start, activity.end);
         if (bodySegments != null) {
-            internalSegments.concat(bodySegments);
+            internalSegments = [...internalSegments, ...bodySegments];
         }
-
-        console.log(bodySegments);
 
         // split straddling ending segment to create a new segment
         containingSegment = this.getContainingSegment(activity.end);
         splitSegments = containingSegment != null ? containingSegment.split(activity.end) : null;
 
-        console.log(splitSegments);
-
         // add first half of split segment to internal segments
-        if (splitSegments != null && splitSegments[0] != null) { 
+        if (splitSegments != null && splitSegments[0] != null) {
             internalSegments.push(splitSegments[0]);
-        } else {
+        }
+
+        if (splitSegments == null || splitSegments[1] == null || splitSegments[1].start !== activity.end) {
             // we ended up in non-segmented time, create a new empty segment 
             const lastSegment = internalSegments.length !== 0 ? internalSegments[internalSegments.length - 1] : null;
             let newSeg = new Segment(lastSegment != null ? lastSegment.end : activity.start, activity.end, 0, 0)
@@ -48,29 +44,45 @@ export class Timeline {
         }
 
         let newInternalSegments = [];
-        for (let i=0 ; i<internalSegments.length ; i++) {
-            // replace any generated segments within the body with empty regular segments
-            if (internalSegments[i] instanceof GeneratedSegment) {
-                let newReplaceSeg = new Segment(internalSegments[i].start, internalSegments[i].end, 0, 0);
-                this.replaceSegment(internalSegments[i], newReplaceSeg);
-                internalSegments[i] = newReplaceSeg;
-            }
-            
-            // patch any non-segmented time inside the body with new empty segments
-            if (i>0 && internalSegments[i-1].end !== internalSegments[i].start) {
-                let newBlankSeg = new Segment(internalSegments[i-1].end, internalSegments[i].start, 0, 0);
-                // add this activity to newly created segments
-                newBlankSeg.addActivity(activity);
 
-                newInternalSegments.push(newBlankSeg);
-                this.insertSegment(newBlankSeg);
-            }
+        if (internalSegments.length === 0) {
+            let newBlankSeg = new Segment(activity.start, activity.end, 0, 0);
+            newInternalSegments.push(newBlankSeg);
+            this.insertSegment(newBlankSeg);    
+        } else {
+            for (let i=0 ; i<internalSegments.length ; i++) {
+                // replace any generated segments within the body with empty regular segments
+                if (internalSegments[i] instanceof GeneratedSegment) {
+                    let newReplaceSeg = new Segment(internalSegments[i].start, internalSegments[i].end, 0, 0);
+                    this.replaceSegment(internalSegments[i], newReplaceSeg);
+                    internalSegments[i] = newReplaceSeg;
+                }
+                
+                // patch any non-segmented time inside the body with new empty segments
+                let tempStart = -1 , tempEnd = -1;
+                if (i === 0 && internalSegments[i].start !== activity.start) {
+                    tempStart = activity.start;
+                    tempEnd = internalSegments[0].start;
+                } else if (i === internalSegments.length - 1 && internalSegments[i].end !== activity.end ) {
+                    tempStart = internalSegments[internalSegments.length - 1].end;
+                    tempEnd = activity.end;
+                } else if (i > 0 && internalSegments[i-1].end !== internalSegments[i].start) {
+                    tempStart = internalSegments[i-1].end;
+                    tempEnd = internalSegments[i].start;
+                }
+                if (tempStart !== -1) {
+                    let newBlankSeg = new Segment(tempStart, tempEnd, 0, 0);
+                    newInternalSegments.push(newBlankSeg);
+                    this.insertSegment(newBlankSeg);
+                }
+    
+                newInternalSegments.push(internalSegments[i]);
+            }    
+        }
 
-            newInternalSegments.push(internalSegments[i]);
-
-
-            // adjust activities & changePerMin in the body segment
-            internalSegments[i].addActivity(activity);
+        // adjust activities & changePerMin in the body segment
+        for (let i=0 ; i<newInternalSegments.length ; i++) {
+            newInternalSegments[i].addActivity(activity);
         }
 
         // add generated segments to the end of this if this is the last segment
@@ -80,7 +92,6 @@ export class Timeline {
         }
 
         this.recalculateSegments();
-        console.log(this.segments);
     }
 
     remove = (activity) => {
@@ -138,7 +149,6 @@ export class Timeline {
 
     // recalculates the startValues for each segment. Also recalculates the length of generated segments
     recalculateSegments = () => {
-        console.log(this.segments);
         for (let i=0 ; i<this.segments.length ; i++) {
             if (i === 0) {
                 this.segments[i].startVal = templates.GENERATED_BASELINE;

@@ -75,6 +75,11 @@ export default class Segment {
 
         return outVal;
     }
+
+    // returns the number of minutes inside this segment where glycation occurs
+    getGlycationMinutes = () => {
+
+    }
 }
 
 

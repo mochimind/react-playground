@@ -27,9 +27,6 @@ export const ActivityTypes = {
     GENERATED: 'generated'
 };
 
-export const GENERATED_BASELINE = 80;
-export const GENERATED_CHANGE_PER_MIN = 1;
-
 class TemplateFactory {
     constructor(id, type, description, index) {
         this.id = id;

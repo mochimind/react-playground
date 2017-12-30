@@ -1,9 +1,9 @@
 
 import Segment from './Segment';
 import GeneratedSegment from './GeneratedSegment';
-import * as templates from '../activity/TemplateFactory';
 import * as timelineEvents from './TimelineEvents';
 
+import * as config from '../Config';
 
 export class Timeline {
     // a sequential list of segments which create a graph
@@ -87,7 +87,7 @@ export class Timeline {
 
         // add generated segments to the end of this if this is the last segment
         if (splitSegments == null || splitSegments[1] == null) {
-            let newGenSeg = new GeneratedSegment(activity.end, 0, templates.GENERATED_BASELINE, templates.GENERATED_CHANGE_PER_MIN, null);
+            let newGenSeg = new GeneratedSegment(activity.end, 0, config.BASE_BLOOD_SUGAR, config.BASE_CHANGE_PER_MIN, null);
             this.insertSegment(newGenSeg);
         }
 
@@ -109,7 +109,7 @@ export class Timeline {
                     } else {
                         // create generated segments in non-segmented space
                         // again, we don't do anything with the initialization of values and let the recalculation do it
-                        let newGenSeg = new GeneratedSegment(lastNonRedundant.end, 0, templates.GENERATED_BASELINE, templates.GENERATED_CHANGE_PER_MIN, null);
+                        let newGenSeg = new GeneratedSegment(lastNonRedundant.end, 0, config.BASE_BLOOD_SUGAR, config.BASE_CHANGE_PER_MIN, null);
                         this.replaceSegment(this.segments[i], newGenSeg);
                     }
                 } else {
@@ -151,7 +151,7 @@ export class Timeline {
     recalculateSegments = () => {
         for (let i=0 ; i<this.segments.length ; i++) {
             if (i === 0) {
-                this.segments[i].startVal = templates.GENERATED_BASELINE;
+                this.segments[i].startVal = config.BASE_BLOOD_SUGAR;
             } else {
                 this.segments[i].recalculate(this.segments[i-1], this.segments[i+1]);
             }
@@ -199,8 +199,13 @@ export class Timeline {
         return outVal;
     }
 
-    getGlycationMinutes = (start, finish) => {
+    getGlycationMinutes = () => {
+        let glycationMinutes = 0;
+        for (let i=0 ; i<this.segments.length ; i++) {
+            glycationMinutes += this.segments[i].getGlycationMinutes();
+        }
 
+        return glycationMinutes;
     }
 }
 

@@ -17,7 +17,6 @@ class InputPanel extends Component {
     };
 
     handleActivityChange = (newVal) => {
-        console.log(newVal)
         this.setState({matchedActivity: newVal})
     }
 

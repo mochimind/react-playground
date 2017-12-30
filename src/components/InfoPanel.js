@@ -11,7 +11,8 @@ const infoPanel = (props) => {
         <div className='infoPanel'>
             <h2>Your Info</h2>
             <div className='infoColumn'>
-                <DataOutput label='Avg daily glycation' value={props.avgGlycation}/>
+                <DataOutput label='Total glycation minutes' value={props.totalGlycation}/>
+                <DataOutput label='Avg daily glycation' value={props.averageGlycation}/>
             </div>
             <div className='infoColumn'>
             </div>

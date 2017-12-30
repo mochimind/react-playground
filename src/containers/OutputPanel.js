@@ -14,7 +14,9 @@ class OutputPanel extends Component {
     constructor() {
         super();
         this.state = {
-            data: []
+            data: [],
+            totalGlycation: 0,
+            averageGlycation: 0
         };
         
         timelineEvents.AddListener(this.handleDataChange);
@@ -22,15 +24,16 @@ class OutputPanel extends Component {
 
     handleDataChange = (eventType, newData) => {
         if (eventType !== timelineEvents.EventType.update) { return; }
+        
         const newArr = [];
-        for (let i=0 ; i<newData.length ; i++) {
-            let newEntry = newData[i];
+        for (let i=0 ; i<newData.bloodSugar.length ; i++) {
+            let newEntry = newData.bloodSugar[i];
             // TODO: this is a hack workaround for google - proper but not working code commented out
             if (i === 0) {
                 newArr.push([0, newEntry.startVal]);
             }
 
-            newArr.push([util.MinutesBetween(newData[0].startTime, newEntry.endTime), newEntry.endVal]);
+            newArr.push([util.MinutesBetween(newData.bloodSugar[0].startTime, newEntry.endTime), newEntry.endVal]);
 
             /*
             let t = newEntry.startTime;
@@ -48,14 +51,14 @@ class OutputPanel extends Component {
                 */
         }
 
-        this.setState({data: newArr});
+        this.setState({data: newArr, totalGlycation: Math.round(newData.glycationMinutes), averageGlycation: Math.round(newData.dailyGlycation)});
     }
 
     render() {
         return(
             <div className='outputPanel'>
                 <SugarChart data={this.state.data} />
-                <InfoPanel />
+                <InfoPanel totalGlycation={this.state.totalGlycation} averageGlycation={this.state.averageGlycation}/>
             </div>
         );
     }

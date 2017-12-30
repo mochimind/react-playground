@@ -1,4 +1,5 @@
 import * as util from '../Utils';
+import * as config from '../Config';
 
 export default class Segment {
     constructor(start, end, startVal, changePerMin) {
@@ -78,7 +79,19 @@ export default class Segment {
 
     // returns the number of minutes inside this segment where glycation occurs
     getGlycationMinutes = () => {
+        if (this.startVal <= config.GLYCATION_POINT && this.changePerMin <= 0) {
+            return 0;
+        }
 
+        if (this.startVal > config.GLYCATION_POINT) {
+            // we are already glycating, find when glycation stops
+            const glycationTime = Math.round(this.startVal - config.GLYCATION_POINT) / this.changePerMin;
+            return Math.min(util.DiffMinutes(this.start, this.end), glycationTime);
+        } else {
+            // we haven't started glycating, find out when we start glycating
+            const glycationTime = (config.GLYCATION_POINT - this.startVal) / this.changePerMin;
+            return Math.max(0, util.DiffMinutes(this.start, this.end) - glycationTime);
+        }
     }
 }
 

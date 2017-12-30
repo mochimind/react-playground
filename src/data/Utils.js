@@ -25,4 +25,13 @@ export const MinutesBetween = (date1, date2) => {
     return Math.round((date2-date1)/millisecondsInMinute);
 }
 
+// returns a new Date that is the start of the day in date
+export const DayStart = (date) => {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+}
+
+// returns a new Date that is the end of the day in date
+export const DayEnd = (date) => {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+}
 

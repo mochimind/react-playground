@@ -3,6 +3,7 @@ import Segment from './Segment';
 import GeneratedSegment from './GeneratedSegment';
 import * as timelineEvents from './TimelineEvents';
 
+import * as util from '../Utils';
 import * as config from '../Config';
 
 export class Timeline {
@@ -156,7 +157,7 @@ export class Timeline {
                 this.segments[i].recalculate(this.segments[i-1], this.segments[i+1]);
             }
         }
-        timelineEvents.Broadcast(timelineEvents.EventType.update, this.getGraphData());
+        timelineEvents.Broadcast(timelineEvents.EventType.update, {bloodSugar: this.getGraphData(), glycationMinutes: this.getGlycationMinutes(), dailyGlycation: this.getDailyGlycation()});
     }
 
     // returns the one segment that contains time
@@ -206,6 +207,14 @@ export class Timeline {
         }
 
         return glycationMinutes;
+    }
+
+    getDailyGlycation = () => {
+        if (this.segments.length < 2) {
+            return this.getGlycationMinutes();
+        }
+
+        return this.getGlycationMinutes() / Math.max(1, util.DaysBetween(util.DayStart(this.segments[0].start), util.DayEnd(this.segments[this.segments.length - 1].end)));
     }
 }
 

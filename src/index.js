@@ -4,7 +4,6 @@ import './index.css';
 import App from './containers/App';
 import registerServiceWorker from './registerServiceWorker';
 
-import InputPanel from './containers/InputPanel';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 registerServiceWorker();

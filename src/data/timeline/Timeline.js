@@ -1,8 +1,9 @@
 
-import Activity from '../activity/Activity';
 import Segment from './Segment';
 import GeneratedSegment from './GeneratedSegment';
 import * as templates from '../activity/TemplateFactory';
+import * as timelineEvents from './TimelineEvents';
+
 
 export class Timeline {
     // a sequential list of segments which create a graph
@@ -37,7 +38,6 @@ export class Timeline {
             this.insertSegment(newSeg);
         }
 
-        let insertedItems = 0;
         let newInternalSegments = [];
         for (let i=0 ; i<internalSegments.length ; i++) {
             // replace any generated segments within the body with empty regular segments
@@ -48,7 +48,7 @@ export class Timeline {
             }
             
             // patch any non-segmented time inside the body with new empty segments
-            if (i>0 && internalSegments[i-1].end != internalSegments[i].start) {
+            if (i>0 && internalSegments[i-1].end !== internalSegments[i].start) {
                 let newBlankSeg = new Segment(internalSegments[i-1].end, internalSegments[i].start, 0, 0);
                 // add this activity to newly created segments
                 newBlankSeg.addActivity(activity);
@@ -80,16 +80,16 @@ export class Timeline {
             if (this.segments[i].removeActivity(activity)) {
                 // merge redundant segments
                 if (this.segments[i].isRedundant()) {
-                    this.segments.splice(i, 1);
-                    i--;
-            
                     if (lastNonRedundant instanceof GeneratedSegment) {
                         // we don't need to range extend generated segments because that'll be done automatically
-                        // when the segments are recalculated. Therefore, do nothing here
+                        // when the segments are recalculated
+                        this.segments.splice(i, 1);
+                        i--;                
                     } else {
                         // create generated segments in non-segmented space
                         // again, we don't do anything with the initialization of values and let the recalculation do it
                         let newGenSeg = new GeneratedSegment(lastNonRedundant.end, 0, templates.GENERATED_BASELINE, templates.GENERATED_CHANGE_PER_MIN, null);
+                        this.replaceSegment(this.segments[i], newGenSeg);
                     }
                 } else {
                     lastNonRedundant = this.segments[i];
@@ -129,12 +129,13 @@ export class Timeline {
     // recalculates the startValues for each segment. Also recalculates the length of generated segments
     recalculateSegments = () => {
         for (let i=0 ; i<this.segments.length ; i++) {
-            if (i == 0) {
+            if (i === 0) {
                 this.segments[i].startVal = templates.GENERATED_BASELINE;
             } else {
                 this.segments[i].recalculate(this.segments[i-1], this.segments[i+1]);
             }
         }
+        timelineEvents.Broadcast(timelineEvents.EventType.update, this.getGraphData());
     }
 
     // returns the one segment that contains time
@@ -167,7 +168,11 @@ export class Timeline {
     getGraphData = () => {
         const outVal = [];
         for (let i=0 ; i<this.segments.length ; i++) {
-            outVal.push({startVal: this.segments[i].startVal, slope: this.segments[i].changePerMin});
+            outVal.push({
+                starTime: this.segments[i].start,
+                startVal: this.segments[i].startVal, 
+                endTime: this.segments[i].end,
+                endVal: this.sgements[i].startVal + this.segments[i].getVal()});
         }
 
         return outVal;

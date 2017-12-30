@@ -34,7 +34,7 @@ export default class Segment {
         return (this.activities.length === 0 && this.changePerMin === 0);
     }
 
-    // returns the value at a specified time
+    // returns the DELTA value at a specified time (not the actual value)
     // if time is not specified, or larger than the end time, then the value at end time is returned
     getVal = (time=this.end) => {
         if (time < this.start) { 
